@@ -28,6 +28,26 @@ player = Player(world.starting_room)
 # Fill this out with directions to walk
 # traversal_path = ['n', 'n']
 traversal_path = []
+backtrace = []
+rooms = {}
+counterParts = {'n': 's', 's': 'n', 'e': 'w', 'w': 'e'}
+
+rooms[0] = player.current_room.get_exits()
+
+while len(rooms) < len(room_graph) - 1:
+    if player.current_room.id not in rooms:
+        rooms[player.current_room.id] = player.current_room.get_exits()
+        rooms[player.current_room.id].remove(backtrace[-1])
+
+    while len(rooms[player.current_room.id]) < 1:
+        reverse = backtrace.pop()
+        traversal_path.append(reverse)
+        player.travel(reverse)
+
+    nextRoom = rooms[player.current_room.id].pop(0)
+    traversal_path.append(nextRoom)
+    backtrace.append(counterParts[nextRoom])
+    player.travel(nextRoom)
 
 
 
